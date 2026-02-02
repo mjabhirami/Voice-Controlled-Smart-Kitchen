@@ -28,6 +28,23 @@ def write_pantry(data):
         json.dump(data, f, indent=2)
 
 
+# Shopping list storage
+SHOPPING_FILE = os.path.join(os.path.dirname(__file__), "..", "shopping_list.json")
+
+
+def read_shopping():
+    try:
+        with open(os.path.abspath(SHOPPING_FILE), "r", encoding="utf-8") as f:
+            return json.load(f)
+    except Exception:
+        return {"items": []}
+
+
+def write_shopping(data):
+    with open(os.path.abspath(SHOPPING_FILE), "w", encoding="utf-8") as f:
+        json.dump(data, f, indent=2)
+
+
 @app.get("/health")
 def health():
     return {"status": "ok"}
@@ -88,6 +105,34 @@ class SubstituteRequest(BaseModel):
 def substitute(req: SubstituteRequest):
     subs = get_substitutes(req.ingredient)
     return {"ingredient": req.ingredient, "substitutes": subs}
+
+
+@app.post("/shopping_list")
+def create_shopping_list(items: dict):
+    # expected body: {"items": ["eggs","milk"]}
+    pantry = read_pantry()
+    needed = items.get("items", [])
+    missing = [it for it in needed if it not in pantry.get("items", [])]
+    shop = read_shopping()
+    for m in missing:
+        if m not in shop["items"]:
+            shop["items"].append(m)
+    write_shopping(shop)
+    return {"missing": missing, "shopping_list": shop}
+
+
+@app.get("/shopping_list")
+def get_shopping_list():
+    return read_shopping()
+
+
+@app.get("/shopping_list/export")
+def export_shopping_list():
+    shop = read_shopping()
+    # return CSV string
+    lines = ["item"] + shop.get("items", [])
+    csv = "\n".join(lines)
+    return {"csv": csv}
 
 
 if __name__ == "__main__":
