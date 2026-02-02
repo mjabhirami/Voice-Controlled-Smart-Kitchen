@@ -1,0 +1,32 @@
+[
+  {
+    "title": "Easy Chickpea Curry",
+    "ingredients": ["chickpeas", "onion", "tomato", "garlic", "cumin"],
+    "time": 25,
+    "steps": ["Sauté onion and garlic", "Add spices and tomatoes", "Add chickpeas and simmer"]
+  },
+  {
+    "title": "Classic Pancakes",
+    "ingredients": ["flour", "milk", "egg", "butter", "baking powder"],
+    "time": 20,
+    "steps": ["Mix dry ingredients", "Whisk wet ingredients", "Cook on skillet"]
+  },
+  {
+    "title": "Roasted Vegetables",
+    "ingredients": ["carrot", "potato", "zucchini", "olive oil", "salt"],
+    "time": 40,
+    "steps": ["Chop vegetables", "Toss with oil and salt", "Roast until tender"]
+  },
+  {
+    "title": "Garlic Butter Pasta",
+    "ingredients": ["pasta", "garlic", "butter", "parsley", "parmesan"],
+    "time": 15,
+    "steps": ["Cook pasta", "Sauté garlic in butter", "Toss pasta and serve"]
+  },
+  {
+    "title": "Vegan Tofu Stir Fry",
+    "ingredients": ["tofu", "soy sauce", "broccoli", "carrot", "ginger"],
+    "time": 20,
+    "steps": ["Press and cube tofu", "Stir-fry vegetables", "Add sauce and tofu"]
+  }
+]

@@ -6,11 +6,21 @@ from timers.timer_manager import TimerManager
 from recipes.substitutions import get_substitutes
 import os
 import json
+from voice.engine import VoiceEngine
+from scaledown.simple_search import SimpleScaledown
 
 app = FastAPI(title="Voice-Controlled Smart Kitchen API")
 
 # Simple in-memory timer manager (stub)
 tm = TimerManager()
+
+# Voice engine (text demo)
+voice = VoiceEngine()
+
+# Simple scaledown instance (loads sample recipes)
+scaledown = SimpleScaledown()
+sample_path = os.path.join(os.path.dirname(__file__), "..", "recipes", "sample_recipes.json")
+scaledown.load(str(os.path.abspath(sample_path)))
 
 # Pantry persistence (simple JSON file)
 PANTRY_FILE = os.path.join(os.path.dirname(__file__), "..", "pantry.json")
@@ -106,6 +116,25 @@ class SubstituteRequest(BaseModel):
 def substitute(req: SubstituteRequest):
     subs = get_substitutes(req.ingredient)
     return {"ingredient": req.ingredient, "substitutes": subs}
+
+
+class VoiceRequest(BaseModel):
+    text: str
+
+
+@app.post("/voice/demo")
+def voice_demo(req: VoiceRequest):
+    # Text-based demo: use the voice engine stub to "speak" the text (prints to console)
+    voice.speak(req.text)
+    return {"spoken": req.text}
+
+
+@app.get("/scaledown/search")
+def scaledown_search(q: str = "", k: int = 5):
+    if not q:
+        return {"results": []}
+    results = scaledown.search(q, k)
+    return {"query": q, "results": results}
 
 
 @app.post("/shopping_list")
