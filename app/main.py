@@ -1,4 +1,5 @@
 from fastapi import FastAPI, HTTPException
+from fastapi.responses import StreamingResponse
 from pydantic import BaseModel
 
 from timers.timer_manager import TimerManager
@@ -129,10 +130,24 @@ def get_shopping_list():
 @app.get("/shopping_list/export")
 def export_shopping_list():
     shop = read_shopping()
-    # return CSV string
+    # return CSV as downloadable file
     lines = ["item"] + shop.get("items", [])
-    csv = "\n".join(lines)
-    return {"csv": csv}
+    csv_str = "\n".join(lines) + "\n"
+    csv_bytes = csv_str.encode("utf-8")
+    return StreamingResponse(iter([csv_bytes]), media_type="text/csv", headers={
+        "Content-Disposition": "attachment; filename=shopping_list.csv"
+    })
+
+
+@app.delete("/shopping_list")
+def remove_shopping_items(items: dict):
+    # expected body: {"items": ["eggs","milk"]}
+    to_remove = items.get("items", [])
+    shop = read_shopping()
+    shop_items = shop.get("items", [])
+    shop["items"] = [it for it in shop_items if it not in to_remove]
+    write_shopping(shop)
+    return {"shopping_list": shop}
 
 
 if __name__ == "__main__":
