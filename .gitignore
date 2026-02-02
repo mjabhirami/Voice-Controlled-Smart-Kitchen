@@ -1,0 +1,14 @@
+venv/
+.venv/
+__pycache__/
+*.pyc
+*.pkl
+scaledb.bin
+*.sqlite3
+env.json
+.env
+/.vscode/
+/.idea/
+dist/
+build/
+*.egg-info/
