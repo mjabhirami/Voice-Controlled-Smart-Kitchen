@@ -8,6 +8,7 @@ import os
 import json
 from voice.engine import VoiceEngine
 from scaledown.simple_search import SimpleScaledown
+from scaledown.tfidf_search import TFIDFSearch
 
 app = FastAPI(title="Voice-Controlled Smart Kitchen API")
 
@@ -21,6 +22,10 @@ voice = VoiceEngine()
 scaledown = SimpleScaledown()
 sample_path = os.path.join(os.path.dirname(__file__), "..", "recipes", "sample_recipes.json")
 scaledown.load(str(os.path.abspath(sample_path)))
+
+# TF-IDF scaledown
+tfidf = TFIDFSearch()
+tfidf.load(str(os.path.abspath(sample_path)))
 
 # Pantry persistence (simple JSON file)
 PANTRY_FILE = os.path.join(os.path.dirname(__file__), "..", "pantry.json")
@@ -134,6 +139,14 @@ def scaledown_search(q: str = "", k: int = 5):
     if not q:
         return {"results": []}
     results = scaledown.search(q, k)
+    return {"query": q, "results": results}
+
+
+@app.get("/scaledown/tfidf_search")
+def scaledown_tfidf_search(q: str = "", k: int = 5):
+    if not q:
+        return {"results": []}
+    results = tfidf.search(q, k)
     return {"query": q, "results": results}
 
 
